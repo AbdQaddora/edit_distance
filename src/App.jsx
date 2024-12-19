@@ -29,7 +29,7 @@ function App() {
   const calculateEditDistance = ({
     seq1: dna1 = "",
     seq2: dna2 = "",
-    boundSizeStr,
+    boundSize: boundSizeStr,
     substitutionsCost: subCost,
     insertionsCost: insertCost,
     deletionsCost: deletCost,

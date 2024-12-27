@@ -7,7 +7,10 @@ function findTheOptimalPath(table) {
 
   while (i > 0 || j > 0) {
     indices.push([i, j]);
-    if (table[i][j] === COPY_DIRECTIONS.DIAGONAL) {
+    if (
+      table[i][j] === COPY_DIRECTIONS.DIAGONAL ||
+      table[i][j] === COPY_DIRECTIONS.MATCH
+    ) {
       i -= 1;
       j -= 1;
     } else if (table[i][j] === COPY_DIRECTIONS.LEFT) {

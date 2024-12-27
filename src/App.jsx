@@ -31,6 +31,7 @@ function App() {
   const methodType = useWatch("methodType", form);
   const seq1 = useWatch("seq1", form);
   const seq2 = useWatch("seq2", form);
+  const threshold = useWatch("threshold", form);
 
   const calculateEditDistance = ({
     seq1: dna1 = "",
@@ -75,6 +76,7 @@ function App() {
       if (dna1[i - 1] === dna2[j - 1]) {
         dp[i][j] = dp[i - 1][j - 1];
         dpPaths[i][j] = COPY_DIRECTIONS.MATCH;
+        return dp[i - 1][j - 1];
       } else {
         const minVal = Math.min(
           dp[i - 1]?.[j] ?? Infinity,
@@ -85,12 +87,15 @@ function App() {
         if (minVal === dp[i - 1]?.[j - 1]) {
           dpPaths[i][j] = COPY_DIRECTIONS.DIAGONAL;
           dp[i][j] = substitutionsCost + minVal;
+          return substitutionsCost + minVal;
         } else if (minVal === dp[i - 1]?.[j]) {
           dpPaths[i][j] = COPY_DIRECTIONS.TOP;
           dp[i][j] = insertionsCost + minVal;
+          return insertionsCost + minVal;
         } else if (minVal === dp[i]?.[j - 1]) {
           dpPaths[i][j] = COPY_DIRECTIONS.LEFT;
           dp[i][j] = deletionsCost + minVal;
+          return deletionsCost + minVal;
         }
       }
     };
@@ -108,17 +113,55 @@ function App() {
       }
     };
 
+
     const processAdaptiveBounded = () => {
-      initializeBoundaries(boundSize);
-      let leftSideMarker = 0; 
+      initializeBoundaries(boundSize); // Initialize boundaries or edit distance matrix.
+      let leftSideMarker = 1; // Starting column for bounded computation.
+
       for (let i = 1; i <= dna1Length; i++) {
-        for (
-          let j = i > boundSize ? i - boundSize : 1;
-          j <= Math.min(i + boundSize, dna2Length);
-          j++
-        ) {
-          calculateCell(i, j);
+        let minRowValue = Infinity; // Start with a very large value.
+        let minIndex = leftSideMarker; // Track the minimum index for this row.
+
+        // Iterate to the right starting from the leftSideMarker.
+        let j = leftSideMarker;
+        while (j <= dna2Length) {
+          const tempValue = calculateCell(i, j);
+
+          // Update the minimum value and track the index of the minimum value.
+          if (tempValue < minRowValue) {
+            minRowValue = tempValue;
+            minIndex = j; // Update the minimum index.
+          }
+
+          // If the value exceeds the threshold, stop the rightward traversal.
+          if (tempValue > minRowValue + threshold) {
+            break;
+          }
+
+          j++; // Move to the next cell on the right.
         }
+
+        // Iterate to the left starting from the leftSideMarker.
+        j = leftSideMarker - 1;
+        while (j >= 1) {
+          const tempValue = calculateCell(i, j);
+
+          // Update the minimum value and track the index of the minimum value.
+          if (tempValue < minRowValue) {
+            minRowValue = tempValue;
+            minIndex = j; // Update the minimum index.
+          }
+
+          // If the value exceeds the threshold, stop the leftward traversal.
+          if (tempValue >= minRowValue + threshold) {
+            break;
+          }
+
+          j--; // Move to the next cell on the left.
+        }
+
+        // Update the leftSideMarker for the next row.
+        leftSideMarker = minIndex + 1;
       }
     };
 
@@ -236,7 +279,6 @@ function App() {
               <Col md={12} xs={24}>
                 <Form.Item
                   name={"boundSize"}
-                  initialValue={"normal"}
                   label={
                     <p>
                       {methodType === METHOD_TYPES.ADAPTIVE_BOUNDED
@@ -244,6 +286,38 @@ function App() {
                         : "Bound size"}
                     </p>
                   }
+                  required={false}
+                  rules={[
+                    {
+                      validator: (_, value) => {
+                        if (
+                          !value ||
+                          value <= 0 ||
+                          value > Math?.max(seq1?.length, seq2?.length)
+                        ) {
+                          return Promise.reject("Enter a valid bound size");
+                        }
+
+                        return Promise.resolve();
+                      },
+                    },
+                  ]}
+                >
+                  <Input
+                    size="large"
+                    type={"number"}
+                    disabled={!(seq1?.length > 0 && seq2?.length > 0)}
+                    min={1}
+                    max={Math?.max(seq1?.length, seq2?.length)}
+                  />
+                </Form.Item>
+              </Col>
+            )}
+            {methodType === METHOD_TYPES.ADAPTIVE_BOUNDED && (
+              <Col span={24}>
+                <Form.Item
+                  name={"threshold"}
+                  label={<p>Threshold</p>}
                   required={false}
                   rules={[
                     {

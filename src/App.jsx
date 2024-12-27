@@ -31,7 +31,7 @@ function App() {
   const methodType = useWatch("methodType", form);
   const seq1 = useWatch("seq1", form);
   const seq2 = useWatch("seq2", form);
-  const threshold = useWatch("threshold", form);
+  const thresholdStr = useWatch("threshold", form);
 
   const calculateEditDistance = ({
     seq1: dna1 = "",
@@ -83,7 +83,6 @@ function App() {
           dp[i]?.[j - 1] ?? Infinity,
           dp[i - 1]?.[j - 1] ?? Infinity
         );
-
         if (minVal === dp[i - 1]?.[j - 1]) {
           dpPaths[i][j] = COPY_DIRECTIONS.DIAGONAL;
           dp[i][j] = substitutionsCost + minVal;
@@ -113,8 +112,8 @@ function App() {
       }
     };
 
-
     const processAdaptiveBounded = () => {
+      let threshold = Number(thresholdStr);
       initializeBoundaries(boundSize); // Initialize boundaries or edit distance matrix.
       let leftSideMarker = 1; // Starting column for bounded computation.
 
@@ -126,7 +125,6 @@ function App() {
         let j = leftSideMarker;
         while (j <= dna2Length) {
           const tempValue = calculateCell(i, j);
-
           // Update the minimum value and track the index of the minimum value.
           if (tempValue < minRowValue) {
             minRowValue = tempValue;
@@ -137,7 +135,7 @@ function App() {
           if (tempValue > minRowValue + threshold) {
             break;
           }
-
+          
           j++; // Move to the next cell on the right.
         }
 
@@ -145,7 +143,6 @@ function App() {
         j = leftSideMarker - 1;
         while (j >= 1) {
           const tempValue = calculateCell(i, j);
-
           // Update the minimum value and track the index of the minimum value.
           if (tempValue < minRowValue) {
             minRowValue = tempValue;
@@ -153,13 +150,22 @@ function App() {
           }
 
           // If the value exceeds the threshold, stop the leftward traversal.
-          if (tempValue >= minRowValue + threshold) {
+          if (tempValue > minRowValue + threshold) {
             break;
           }
 
           j--; // Move to the next cell on the left.
         }
 
+        console.log(
+          "Row: ",
+          i,
+          "MinIndex: ",
+          minIndex,
+          "MinValue: ",
+          minRowValue
+        );
+        console.log("==============================================");
         // Update the leftSideMarker for the next row.
         leftSideMarker = minIndex + 1;
       }

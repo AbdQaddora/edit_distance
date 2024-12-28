@@ -1,9 +1,122 @@
-# React + Vite
+# DNA Edit Distance Calculator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React application for calculating the edit distance between two DNA sequences. The edit distance measures the minimum number of operations (insertions, deletions, and substitutions) required to transform one sequence into another. The app provides various methods to calculate the distance, including bounded and adaptive bounded methods.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-# edit_distance
+## Features
+
+- Input DNA sequences of equal length.
+- Choose between multiple calculation methods:
+  - **Normal**: Full computation.
+  - **Bounded**: Limited by a fixed boundary.
+  - **Adaptive Bounded**: Dynamically adjusts the boundary.
+  - **Sequence Alignment**: Alignment-based calculation.
+- Customizable costs for insertions, deletions, and substitutions.
+- Displays the dynamic programming table for visualization.
+- Highlights the optimal transformation path.
+
+---
+
+## Live Demo
+
+Check out the live version of the project here:  
+**[DNA Edit Distance Calculator Live](https://edit-distance.netlify.app/)**
+
+---
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/AbdQaddora/edit_distance.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd edit_distance
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## Usage
+
+1. Enter two DNA sequences of equal length in the input fields.
+2. Select the desired calculation method.
+3. Customize the costs for insertions, deletions, and substitutions (optional).
+4. Click **Calculate** to view the results, including:
+   - Edit distance.
+   - Dynamic programming table.
+   - Optimal transformation path.
+
+---
+
+## Project Structure
+
+```
+src/
+├── components/
+│   └── DNAInput.js
+├── constants/
+│   └── index.js
+├── utils/
+│   ├── convertTableToAntdTable.js
+│   ├── findTheOptimalPath.js
+│   ├── initializeDpMatrix.js
+│   ├── getBackTrackingText.js
+│   └── prepareTableData.js
+├── App.js
+└── index.js
+```
+
+---
+
+## Screenshots
+
+### Input Screen
+![Input image](https://github.com/user-attachments/assets/b6dddaad-112f-4f3a-bb9e-ca5aebaebb20)
+
+
+### Results with Optimal Path
+![Optimal Path](https://github.com/user-attachments/assets/687f974a-216a-4901-9935-b4e65fbedf70)
+
+![image](https://github.com/user-attachments/assets/4d6e84b2-5b7b-407c-8775-ab7580a1023c)
+
+---
+
+## Technologies Used
+
+- **React**: Frontend framework.
+- **Ant Design**: UI components and theming.
+- **JavaScript**: Application logic and utilities.
+
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch-name`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature-branch-name`).
+5. Open a pull request.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Contact
+
+If you have any questions or suggestions, feel free to reach out to:
+
+- **GitHub**: [AbdQaddora](https://github.com/AbdQaddora)

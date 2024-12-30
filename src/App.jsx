@@ -135,7 +135,7 @@ function App() {
           if (tempValue > minRowValue + threshold) {
             break;
           }
-          
+
           j++; // Move to the next cell on the right.
         }
 
@@ -156,16 +156,6 @@ function App() {
 
           j--; // Move to the next cell on the left.
         }
-
-        console.log(
-          "Row: ",
-          i,
-          "MinIndex: ",
-          minIndex,
-          "MinValue: ",
-          minRowValue
-        );
-        console.log("==============================================");
         // Update the leftSideMarker for the next row.
         leftSideMarker = minIndex + 1;
       }
@@ -189,13 +179,16 @@ function App() {
       processUnbounded();
     }
 
+    console.log(dpPaths);
     setDirectionsTable(dpPaths);
     setTrackPath(findTheOptimalPath(dpPaths));
     return prepareTableData(dna1, dna2, dp);
   };
 
   useEffect(() => {
-    setTrackingText(getBackTrackingText(seq1, seq2, directionsTable));
+    setTrackingText(
+      getBackTrackingText(seq1, seq2, directionsTable, trackPath)
+    );
   }, [directionsTable]);
 
   const handleFinish = (values) => {
@@ -423,21 +416,31 @@ function App() {
         {Array.isArray(tableData) && tableData.length > 0 && (
           <Row gutter={[12, 12]} style={{ marginTop: "1rem" }}>
             <Col md={12} xs={24}>
-              <Flex style={{ height: "100%" }} align="center">
-                <Typography.Title level={4}>
-                  {methodType === METHOD_TYPES.SEQUENCE_ALIGNMENT
-                    ? `Sequence Alignment Cost = ${JSON.stringify(
-                        tableData[tableData?.length - 1][`col${seq2?.length}`]
-                      )}`
-                    : methodType === METHOD_TYPES.NORMAL
-                    ? `Edit Distance Cost = ${JSON.stringify(
-                        tableData[tableData?.length - 1][`col${seq2?.length}`]
-                      )}`
-                    : `Approximate Edit Distance Cost = ${JSON.stringify(
-                        tableData[tableData?.length - 1][`col${seq2?.length}`]
-                      )}`}
-                </Typography.Title>
-              </Flex>
+              <Typography.Title level={4}>
+                {methodType === METHOD_TYPES.SEQUENCE_ALIGNMENT
+                  ? `Sequence Alignment Cost = ${JSON.stringify(
+                      tableData[tableData?.length - 1][`col${seq2?.length}`]
+                    )}`
+                  : methodType === METHOD_TYPES.NORMAL
+                  ? `Edit Distance Cost = ${JSON.stringify(
+                      tableData[tableData?.length - 1][`col${seq2?.length}`]
+                    )}`
+                  : `Approximate Edit Distance Cost = ${JSON.stringify(
+                      tableData[tableData?.length - 1][`col${seq2?.length}`]
+                    )}`}
+              </Typography.Title>
+              <div style={{ paddingInlineStart: "12px" }}>
+                <ul>
+                  {trackingText?.mutations?.map((mutation, index) => (
+                    <li
+                      key={index}
+                      style={{ fontSize: "16px", marginTop: "6px" }}
+                    >
+                      {mutation}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </Col>
             <Col md={12} xs={24}>
               <Flex align="center" gap={10} style={{ marginBottom: "0.5rem" }}>

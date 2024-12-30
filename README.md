@@ -81,12 +81,10 @@ src/
 ## Screenshots
 
 ### Input Screen
-![Input image](https://github.com/user-attachments/assets/b6dddaad-112f-4f3a-bb9e-ca5aebaebb20)
+![image](https://github.com/user-attachments/assets/2ccd7961-ccb2-40c5-bcca-aeec8e22c871)
 
 
-### Results with Optimal Path
-![Optimal Path](https://github.com/user-attachments/assets/687f974a-216a-4901-9935-b4e65fbedf70)
-
+### Results Table
 ![image](https://github.com/user-attachments/assets/4d6e84b2-5b7b-407c-8775-ab7580a1023c)
 
 ---
